@@ -6,7 +6,7 @@ function App() {
     {
       id: 1,
       description: "Salary",
-      amount: "5000",
+      amount: 5000,
       type: "income",
       category: "salary",
       date: "2025-01-01",
@@ -14,7 +14,7 @@ function App() {
     {
       id: 2,
       description: "Rent",
-      amount: "1200",
+      amount: 1200,
       type: "expense",
       category: "housing",
       date: "2025-01-02",
@@ -22,7 +22,7 @@ function App() {
     {
       id: 3,
       description: "Groceries",
-      amount: "150",
+      amount: 150,
       type: "expense",
       category: "food",
       date: "2025-01-03",
@@ -30,7 +30,7 @@ function App() {
     {
       id: 4,
       description: "Freelance Work",
-      amount: "800",
+      amount: 800,
       type: "expense",
       category: "salary",
       date: "2025-01-05",
@@ -38,7 +38,7 @@ function App() {
     {
       id: 5,
       description: "Electric Bill",
-      amount: "95",
+      amount: 95,
       type: "expense",
       category: "utilities",
       date: "2025-01-06",
@@ -46,7 +46,7 @@ function App() {
     {
       id: 6,
       description: "Dinner Out",
-      amount: "65",
+      amount: 65,
       type: "expense",
       category: "food",
       date: "2025-01-07",
@@ -54,7 +54,7 @@ function App() {
     {
       id: 7,
       description: "Gas",
-      amount: "45",
+      amount: 45,
       type: "expense",
       category: "transport",
       date: "2025-01-08",
@@ -62,7 +62,7 @@ function App() {
     {
       id: 8,
       description: "Netflix",
-      amount: "15",
+      amount: 15,
       type: "expense",
       category: "entertainment",
       date: "2025-01-10",
@@ -115,7 +115,7 @@ function App() {
     const newTransaction = {
       id: Date.now(),
       description,
-      amount,
+      amount: parseFloat(amount),
       type,
       category,
       date: new Date().toISOString().split("T")[0],
