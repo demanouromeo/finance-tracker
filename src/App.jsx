@@ -111,10 +111,12 @@ function App() {
       amount: parseFloat(amount),
       type,
       category,
-      date: new Date().toISOString().split("T")[0],
+      date: new Date().toISOString().split("T")[0], // .toISOString() converts it to a string like 2026-07-05T14:23:10.123Z (UTC time).
+      //.split("T") breaks that string into ["2026-07-05", "14:23:10.123Z"].
+      //[0] takes bonly the first part, Like "2026-07-05", which is the date in YYYY-MM-DD format.
     };
 
-    setTransactions([...transactions, newTransaction]);
+    setTransactions([...transactions, newTransaction]); //...transactions copies all existing items from the current transactions array. NewTransaction is added at the end
     setDescription("");
     setAmount("");
     setType("expense");

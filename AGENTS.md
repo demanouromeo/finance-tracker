@@ -23,22 +23,27 @@ npm run lint       # ESLint
 
 ```
 src/
-  App.jsx     # single monolithic component — all state and UI lives here
+  App.jsx     # owns app state and coordinates child components
+  Summary.jsx # derives and renders totals from transactions
+  TransactionForm.jsx # controlled form for adding transactions
+  TransactionList.jsx # filters and renders transaction rows
   App.css     # all styles
   main.jsx    # React root mount
 ```
 
 ## Key Conventions
 
-- All application logic and state is in `src/App.jsx` (no sub-components yet — decomposing it is part of the course)
+- `src/App.jsx` owns the shared state and submits handlers, while presentational concerns live in child components.
+- `Summary.jsx` computes income, expenses, and balance from the `transactions` prop.
+- `TransactionForm.jsx` is a controlled form that receives field values and setters from `App.jsx`.
+- `TransactionList.jsx` receives filtered transactions plus filter state handlers and renders the table.
 - Categories are a fixed array: `["food", "housing", "utilities", "transport", "entertainment", "salary", "other"]`
-- Transaction shape: `{ id, description, amount, type: "income"|"expense", category, date: "YYYY-MM-DD" }`
+- Transaction shape: `{ id, description, amount: number, type: "income"|"expense", category, date: "YYYY-MM-DD" }`
 - CSS class names follow BEM-like naming (`.summary-card`, `.income-amount`, etc.)
 
 ## Known Intentional Issues
 
-- **Bug**: `amount` is stored as a string, so `reduce((sum, t) => sum + t.amount, 0)` concatenates instead of summing — balance/totals are wrong
 - **UI**: minimal unstyled layout — improving it is part of the course
-- **Code quality**: no component decomposition, mixed concerns in `App.jsx`
+- **Code quality**: the app is now decomposed, but most business rules still flow through `App.jsx` as the orchestration layer.
 
 Do not silently fix the intentional bug unless explicitly asked — it is a course teaching moment.
