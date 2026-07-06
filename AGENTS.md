@@ -23,10 +23,10 @@ npm run lint       # ESLint
 
 ```
 src/
-  App.jsx     # owns app state and coordinates child components
+  App.jsx     # owns app state, add/delete handlers, and coordinates child components
   Summary.jsx # derives and renders totals from transactions
   TransactionForm.jsx # controlled form for adding transactions
-  TransactionList.jsx # filters and renders transaction rows
+  TransactionList.jsx # filters, renders transaction rows, and emits delete actions
   App.css     # all styles
   main.jsx    # React root mount
 ```
@@ -34,9 +34,10 @@ src/
 ## Key Conventions
 
 - `src/App.jsx` owns the shared state and submits handlers, while presentational concerns live in child components.
+- `App.jsx` confirms before deletion and removes transactions by `id` via immutable state updates.
 - `Summary.jsx` computes income, expenses, and balance from the `transactions` prop.
 - `TransactionForm.jsx` is a controlled form that receives field values and setters from `App.jsx`.
-- `TransactionList.jsx` receives filtered transactions plus filter state handlers and renders the table.
+- `TransactionList.jsx` receives filtered transactions plus filter state handlers, and calls `onDelete(id)` from each row action.
 - Categories are a fixed array: `["food", "housing", "utilities", "transport", "entertainment", "salary", "other"]`
 - Transaction shape: `{ id, description, amount: number, type: "income"|"expense", category, date: "YYYY-MM-DD" }`
 - CSS class names follow BEM-like naming (`.summary-card`, `.income-amount`, etc.)

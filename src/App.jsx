@@ -123,6 +123,18 @@ function App() {
     setCategory("food");
   };
 
+  const handleDelete = (id) => {
+    const shouldDelete = window.confirm(
+      "Are you sure you want to delete this transaction?",
+    );
+
+    if (!shouldDelete) return;
+
+    setTransactions((currentTransactions) =>
+      currentTransactions.filter((transaction) => transaction.id !== id),
+    );
+  };
+
   return (
     <div className="app">
       <h1>Finance Tracker</h1>
@@ -150,6 +162,7 @@ function App() {
         filterCategory={filterCategory}
         onFilterTypeChange={setFilterType}
         onFilterCategoryChange={setFilterCategory}
+        onDelete={handleDelete}
       />
     </div>
   );

@@ -5,6 +5,7 @@ function TransactionList({
   filterCategory,
   onFilterTypeChange,
   onFilterCategoryChange,
+  onDelete,
 }) {
   return (
     <div className="transactions">
@@ -38,6 +39,7 @@ function TransactionList({
             <th>Description</th>
             <th>Category</th>
             <th>Amount</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -54,6 +56,15 @@ function TransactionList({
                 }
               >
                 {transaction.type === "income" ? "+" : "-"}${transaction.amount}
+              </td>
+              <td>
+                <button
+                  type="button"
+                  className="delete-btn"
+                  onClick={() => onDelete(transaction.id)}
+                >
+                  Delete
+                </button>
               </td>
             </tr>
           ))}
