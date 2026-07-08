@@ -31,6 +31,7 @@ src/
   main.jsx    # React root mount
 ```
 
+
 ## Key Conventions
 
 - `src/App.jsx` owns the shared state and submits handlers, while presentational concerns live in child components.

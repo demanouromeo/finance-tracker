@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Summary from "./Summary";
 import TransactionForm from "./TransactionForm";
 import TransactionList from "./TransactionList";
 
 function App() {
+  const [theme, setTheme] = useState("dark");
   const [transactions, setTransactions] = useState([
     {
       id: 1,
@@ -79,6 +80,11 @@ function App() {
   const [filterType, setFilterType] = useState("all");
   const [filterCategory, setFilterCategory] = useState("all");
 
+  useEffect(() => {
+    document.body.dataset.theme = theme;
+    document.body.style.colorScheme = theme;
+  }, [theme]);
+
   const categories = [
     "food",
     "housing",
@@ -135,10 +141,49 @@ function App() {
     );
   };
 
+  const toggleTheme = () => {
+    setTheme((currentTheme) => (currentTheme === "dark" ? "light" : "dark"));
+  };
+
   return (
-    <div className="app">
-      <h1>Finance Tracker</h1>
-      <p className="subtitle">Track your income and expenses</p>
+    <div className="app" data-theme={theme}>
+      <header className="app-header">
+        <div className="app-copy">
+          <div className="brand-lockup">
+            <div className="brand-mark" aria-hidden="true">
+              <span className="brand-mark__dot" />
+              <span className="brand-mark__bar brand-mark__bar--tall" />
+              <span className="brand-mark__bar brand-mark__bar--mid" />
+              <span className="brand-mark__bar brand-mark__bar--short" />
+            </div>
+
+            <div>
+              <p className="eyebrow">Personal finance dashboard</p>
+              <h1>Finance Tracker</h1>
+              <p className="subtitle">Track your income and expenses</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="app-actions">
+          <div className="app-badge" aria-label="Live ledger status">
+            Live ledger
+          </div>
+
+          <button
+            type="button"
+            className="theme-toggle"
+            onClick={toggleTheme}
+            aria-pressed={theme === "dark"}
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+          >
+            <span className="theme-toggle__icon" aria-hidden="true">
+              {theme === "dark" ? "☾" : "☼"}
+            </span>
+            <span>{theme === "dark" ? "Dark theme" : "Light theme"}</span>
+          </button>
+        </div>
+      </header>
 
       <Summary transactions={transactions} />
 
