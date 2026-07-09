@@ -39,21 +39,21 @@ body::before {
 }
 
 body[data-theme="dark"] {
-  --page-glow-left: rgba(143, 211, 200, 0.22);
-  --page-glow-right: rgba(239, 181, 110, 0.14);
-  --page-top: #0a0d14;
-  --page-mid: #111726;
-  --page-bottom: #090b11;
+  --page-glow-left: rgba(98, 221, 240, 0.26);
+  --page-glow-right: rgba(106, 124, 255, 0.24);
+  --page-top: #070c19;
+  --page-mid: #0f1730;
+  --page-bottom: #090f20;
   --grid-line: rgba(255, 255, 255, 0.03);
   --grid-opacity: 0.24;
 }
 
 body[data-theme="light"] {
-  --page-glow-left: rgba(21, 111, 103, 0.14);
-  --page-glow-right: rgba(181, 107, 43, 0.12);
-  --page-top: #f7f2ea;
-  --page-mid: #f0f4f8;
-  --page-bottom: #edf0f5;
+  --page-glow-left: rgba(21, 136, 162, 0.12);
+  --page-glow-right: rgba(68, 87, 220, 0.12);
+  --page-top: #f5f8fd;
+  --page-mid: #edf2fa;
+  --page-bottom: #e9eff8;
   --grid-line: rgba(21, 32, 51, 0.05);
   --grid-opacity: 0.18;
 }

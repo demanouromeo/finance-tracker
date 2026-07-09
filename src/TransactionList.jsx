@@ -1,3 +1,5 @@
+import { formatCurrency } from "./utils/currency";
+
 function TransactionList({
   transactions,
   categories,
@@ -47,7 +49,14 @@ function TransactionList({
             <tr key={transaction.id}>
               <td>{transaction.date}</td>
               <td>{transaction.description}</td>
-              <td>{transaction.category}</td>
+              <td>
+                <span
+                  className="category-badge"
+                  data-category={transaction.category}
+                >
+                  {transaction.category}
+                </span>
+              </td>
               <td
                 className={
                   transaction.type === "income"
@@ -55,7 +64,8 @@ function TransactionList({
                     : "expense-amount"
                 }
               >
-                {transaction.type === "income" ? "+" : "-"}${transaction.amount}
+                {transaction.type === "income" ? "+" : "-"}
+                {formatCurrency(transaction.amount)}
               </td>
               <td>
                 <button
@@ -68,6 +78,13 @@ function TransactionList({
               </td>
             </tr>
           ))}
+          {transactions.length === 0 && (
+            <tr className="empty-row">
+              <td colSpan="5">
+                No transactions match this filter — try clearing it.
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>

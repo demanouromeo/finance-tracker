@@ -1,8 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import Summary from "./Summary";
 import TransactionForm from "./TransactionForm";
 import TransactionList from "./TransactionList";
+
+const CATEGORIES = [
+  "food",
+  "housing",
+  "utilities",
+  "transport",
+  "entertainment",
+  "salary",
+  "other",
+];
 
 function App() {
   const [theme, setTheme] = useState("dark");
@@ -35,7 +45,7 @@ function App() {
       id: 4,
       description: "Freelance Work",
       amount: 800,
-      type: "expense",
+      type: "income",
       category: "salary",
       date: "2025-01-05",
     },
@@ -72,11 +82,6 @@ function App() {
       date: "2025-01-10",
     },
   ]);
-
-  const [description, setDescription] = useState("");
-  const [amount, setAmount] = useState("");
-  const [type, setType] = useState("expense");
-  const [category, setCategory] = useState("food");
   const [filterType, setFilterType] = useState("all");
   const [filterCategory, setFilterCategory] = useState("all");
 
@@ -85,48 +90,71 @@ function App() {
     document.body.style.colorScheme = theme;
   }, [theme]);
 
-  const categories = [
-    "food",
-    "housing",
-    "utilities",
-    "transport",
-    "entertainment",
-    "salary",
-    "other",
-  ];
+  const filteredTransactions = useMemo(() => {
+    let nextTransactions = transactions;
 
-  let filteredTransactions = transactions;
-  if (filterType !== "all") {
-    filteredTransactions = filteredTransactions.filter(
-      (t) => t.type === filterType,
-    );
-  }
-  if (filterCategory !== "all") {
-    filteredTransactions = filteredTransactions.filter(
-      (t) => t.category === filterCategory,
-    );
-  }
+    if (filterType !== "all") {
+      nextTransactions = nextTransactions.filter((t) => t.type === filterType);
+    }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!description || !amount) return;
+    if (filterCategory !== "all") {
+      nextTransactions = nextTransactions.filter(
+        (t) => t.category === filterCategory,
+      );
+    }
+
+    return nextTransactions;
+  }, [transactions, filterType, filterCategory]);
+
+  const recentExpenses = useMemo(() => {
+    return transactions
+      .filter((transaction) => transaction.type === "expense")
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .slice(-2);
+  }, [transactions]);
+
+  const spendingInsight = useMemo(() => {
+    if (recentExpenses.length < 2) {
+      return "Add another expense to unlock trend insight";
+    }
+
+    const [previousExpense, latestExpense] = recentExpenses;
+    const baseline = Math.max(previousExpense.amount, 1);
+    const percentChange =
+      ((latestExpense.amount - previousExpense.amount) / baseline) * 100;
+
+    if (Math.abs(percentChange) < 1) {
+      return "Spending velocity steady across your latest entries";
+    }
+
+    const direction = percentChange > 0 ? "up" : "down";
+    return `Spending ${Math.abs(percentChange).toFixed(0)}% ${direction} vs previous expense`;
+  }, [recentExpenses]);
+
+  const handleSubmit = ({ description, amount, type, category }) => {
+    const trimmedDescription = description.trim();
+    const parsedAmount = Number.parseFloat(amount);
+
+    if (
+      !trimmedDescription ||
+      !Number.isFinite(parsedAmount) ||
+      parsedAmount <= 0
+    )
+      return;
 
     const newTransaction = {
-      id: Date.now(),
-      description,
-      amount: parseFloat(amount),
+      id: crypto.randomUUID(),
+      description: trimmedDescription,
+      amount: parsedAmount,
       type,
       category,
-      date: new Date().toISOString().split("T")[0], // .toISOString() converts it to a string like 2026-07-05T14:23:10.123Z (UTC time).
-      //.split("T") breaks that string into ["2026-07-05", "14:23:10.123Z"].
-      //[0] takes bonly the first part, Like "2026-07-05", which is the date in YYYY-MM-DD format.
+      date: new Date().toISOString().split("T")[0],
     };
 
-    setTransactions([...transactions, newTransaction]); //...transactions copies all existing items from the current transactions array. NewTransaction is added at the end
-    setDescription("");
-    setAmount("");
-    setType("expense");
-    setCategory("food");
+    setTransactions((currentTransactions) => [
+      ...currentTransactions,
+      newTransaction,
+    ]);
   };
 
   const handleDelete = (id) => {
@@ -161,6 +189,10 @@ function App() {
               <p className="eyebrow">Personal finance dashboard</p>
               <h1>Finance Tracker</h1>
               <p className="subtitle">Track your income and expenses</p>
+              <p className="insight-chip">
+                <span className="insight-chip__dot" aria-hidden="true" />
+                {spendingInsight}
+              </p>
             </div>
           </div>
         </div>
@@ -185,24 +217,15 @@ function App() {
         </div>
       </header>
 
+      <div className="aurora-band" aria-hidden="true" />
+
       <Summary transactions={transactions} />
 
-      <TransactionForm
-        description={description}
-        amount={amount}
-        type={type}
-        category={category}
-        categories={categories}
-        onDescriptionChange={setDescription}
-        onAmountChange={setAmount}
-        onTypeChange={setType}
-        onCategoryChange={setCategory}
-        onSubmit={handleSubmit}
-      />
+      <TransactionForm categories={CATEGORIES} onSubmit={handleSubmit} />
 
       <TransactionList
         transactions={filteredTransactions}
-        categories={categories}
+        categories={CATEGORIES}
         filterType={filterType}
         filterCategory={filterCategory}
         onFilterTypeChange={setFilterType}

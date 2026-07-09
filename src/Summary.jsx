@@ -12,15 +12,16 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { formatCurrency } from "./utils/currency";
 
 const CHART_COLORS = [
-  "#2f4f4f",
-  "#1b7f79",
-  "#c07f00",
-  "#b23a48",
-  "#355070",
-  "#6a4c93",
-  "#0081a7",
+  "#62DDF0",
+  "#6A7CFF",
+  "#9BEA78",
+  "#9A8CFF",
+  "#66E3C4",
+  "#F18FA2",
+  "#70C6FF",
 ];
 
 function Summary({ transactions }) {
@@ -40,10 +41,9 @@ function Summary({ transactions }) {
     .filter((transaction) => transaction.type === "expense")
     .reduce((totalsByCategory, transaction) => {
       const currentTotal = totalsByCategory[transaction.category] ?? 0;
-      return {
-        ...totalsByCategory,
-        [transaction.category]: currentTotal + transaction.amount,
-      };
+      totalsByCategory[transaction.category] =
+        currentTotal + transaction.amount;
+      return totalsByCategory;
     }, {});
 
   const spendingData = Object.entries(expenseByCategory).map(
@@ -53,22 +53,20 @@ function Summary({ transactions }) {
     }),
   );
 
-  const formatMoney = (value) => `$${value.toFixed(2)}`;
-
   return (
     <div className="summary">
       <div className="summary-cards">
         <div className="summary-card">
           <h3>Income</h3>
-          <p className="income-amount">{formatMoney(totalIncome)}</p>
+          <p className="income-amount">{formatCurrency(totalIncome)}</p>
         </div>
         <div className="summary-card">
           <h3>Expenses</h3>
-          <p className="expense-amount">{formatMoney(totalExpenses)}</p>
+          <p className="expense-amount">{formatCurrency(totalExpenses)}</p>
         </div>
         <div className="summary-card">
           <h3>Balance</h3>
-          <p className="balance-amount">{formatMoney(balance)}</p>
+          <p className="balance-amount">{formatCurrency(balance)}</p>
         </div>
       </div>
 
@@ -97,7 +95,7 @@ function Summary({ transactions }) {
                         />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value) => formatMoney(value)} />
+                    <Tooltip formatter={(value) => formatCurrency(value)} />
                     <Legend />
                   </PieChart>
                 ) : (
@@ -107,8 +105,8 @@ function Summary({ transactions }) {
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" />
-                    <YAxis tickFormatter={(value) => `$${value}`} />
-                    <Tooltip formatter={(value) => formatMoney(value)} />
+                    <YAxis tickFormatter={(value) => formatCurrency(value)} />
+                    <Tooltip formatter={(value) => formatCurrency(value)} />
                     <Bar dataKey="value" radius={[6, 6, 0, 0]}>
                       {spendingData.map((entry, index) => (
                         <Cell
